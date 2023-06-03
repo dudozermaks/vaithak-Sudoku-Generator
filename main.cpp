@@ -11,9 +11,6 @@ int main(int argc, char const *argv[])
   // Creating an instance of Sudoku
   Sudoku *puzzle = new Sudoku();
 
-  // Creating a seed for puzzle generation
-  puzzle->createSeed();
-
   // Generating the puzzle
   puzzle->genPuzzle();
 

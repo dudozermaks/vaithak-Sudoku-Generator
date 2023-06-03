@@ -21,16 +21,17 @@ private:
   
   // random device sets seed for rng
   std::mt19937 rng{std::random_device{}()};
+  void clearGrid();
+  void fillEmptyDiagonalBox(int);
+  void createSeed();
+  bool solveGrid();
+  void countSoln(int &number);
 public:
   Sudoku ();
   Sudoku (std::string, bool row_major=true);
   static bool isRightSolved(std::string puzzle, bool row_major);
-  void fillEmptyDiagonalBox(int);
-  void createSeed();
   void printGrid();
-  bool solveGrid();
   std::string getGrid();
-  void countSoln(int &number);
   void genPuzzle();
   bool verifyGridStatus();
   void printSVG(std::string);

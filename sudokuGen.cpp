@@ -279,6 +279,8 @@ void Sudoku::countSoln(int &number)
 // START: Gneerate puzzle
 void Sudoku::genPuzzle()
 {
+  clearGrid();
+  createSeed();
   for(int i=0;i<81;i++)
   {
     int x = (this->gridPos[i])/9;
@@ -489,4 +491,12 @@ bool Sudoku::isRightSolved(std::string puzzle, bool row_major){
   }
 
   return true;
+}
+
+void Sudoku::clearGrid(){
+  for (int i=0; i<9; i++){
+    for (int j=0; j<9; j++){
+      grid[i][j] = 0;
+    }
+  }
 }
