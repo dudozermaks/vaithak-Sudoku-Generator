@@ -1,4 +1,5 @@
 #include <iostream>
+#include <random>
 #include <algorithm>
 #include <ctime>
 #include <cstdlib>
@@ -17,7 +18,9 @@ private:
   int gridPos[81];
   int difficultyLevel;
   bool grid_status;
-
+  
+  // random device sets seed for rng
+  std::mt19937 rng{std::random_device{}()};
 public:
   Sudoku ();
   Sudoku (std::string, bool row_major=true);

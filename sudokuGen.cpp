@@ -17,15 +17,6 @@ string Sudoku::getGrid()
 }
 // END: Get grid as string in row major order
 
-
-// START: Generate random number
-int genRandNum(int maxLimit)
-{
-  return rand()%maxLimit;
-}
-// END: Generate random number
-
-
 // START: Helper functions for solving grid
 bool FindUnassignedLocation(int grid[9][9], int &row, int &col)
 {
@@ -88,7 +79,7 @@ bool isSafe(int grid[9][9], int row, int col, int num)
 void Sudoku::fillEmptyDiagonalBox(int idx)
 {
   int start = idx*3;
-  random_shuffle(this->guessNum, (this->guessNum) + 9, genRandNum);
+  std::shuffle(this->guessNum, (this->guessNum) + 9, rng);
   for (int i = 0; i < 3; ++i)
   {
     for (int j = 0; j < 3; ++j)
@@ -141,7 +132,7 @@ Sudoku::Sudoku()
     this->gridPos[i] = i;
   }
 
-  random_shuffle(this->gridPos, (this->gridPos) + 81, genRandNum);
+  std::shuffle(this->gridPos, (this->gridPos) + 81, rng);
 
   // Randomly shuffling the guessing number array
   for(int i=0;i<9;i++)
@@ -149,7 +140,7 @@ Sudoku::Sudoku()
     this->guessNum[i]=i+1;
   }
 
-  random_shuffle(this->guessNum, (this->guessNum) + 9, genRandNum);
+  std::shuffle(this->guessNum, (this->guessNum) + 9, rng);
 
   // Initialising the grid
   for(int i=0;i<9;i++)
@@ -242,7 +233,7 @@ Sudoku::Sudoku(string grid_str, bool row_major)
     this->guessNum[i]=i+1;
   }
 
-  random_shuffle(this->guessNum, (this->guessNum) + 9, genRandNum);
+  std::shuffle(this->guessNum, (this->guessNum) + 9, rng);
 
   grid_status = true;
 }
