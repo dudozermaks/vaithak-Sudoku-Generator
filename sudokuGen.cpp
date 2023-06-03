@@ -159,74 +159,20 @@ Sudoku::Sudoku()
 // START: Custom Initialising with grid passed as argument
 Sudoku::Sudoku(string grid_str, bool row_major)
 {
-  if(grid_str.length() != 81)
+  if (!isRightSolved(grid_str, row_major))
   {
-    grid_status=false;
+    grid_status = false;
     return;
   }
 
-  // First pass: Check if all cells are valid
+  // Move numbers to grid
   for(int i=0; i<81; ++i)
   {
     int curr_num = grid_str[i]-'0';
-    if(!((curr_num == UNASSIGNED) || (curr_num > 0 && curr_num < 10)))
-    {
-      grid_status=false;
-      return;
-    }
 
     if(row_major) grid[i/9][i%9] = curr_num;
     else          grid[i%9][i/9] = curr_num;
   }
-
-  // Second pass: Check if all columns are valid
-  for (int col_num=0; col_num<9; ++col_num)
-  {
-    bool nums[10]={false};
-    for (int row_num=0; row_num<9; ++row_num)
-    {
-      int curr_num = grid[row_num][col_num];
-      if(curr_num!=UNASSIGNED && nums[curr_num]==true)
-      {
-        grid_status=false;
-        return;
-      }
-      nums[curr_num] = true;
-    }
-  }
-
-  // Third pass: Check if all rows are valid
-  for (int row_num=0; row_num<9; ++row_num)
-  {
-    bool nums[10]={false};
-    for (int col_num=0; col_num<9; ++col_num)
-    {
-      int curr_num = grid[row_num][col_num];
-      if(curr_num!=UNASSIGNED && nums[curr_num]==true)
-      {
-        grid_status=false;
-        return;
-      }
-      nums[curr_num] = true;
-    }
-  }
-
-  // Fourth pass: Check if all blocks are valid
-  for (int block_num=0; block_num<9; ++block_num)
-  {
-    bool nums[10]={false};
-    for (int cell_num=0; cell_num<9; ++cell_num)
-    {
-      int curr_num = grid[((int)(block_num/3))*3 + (cell_num/3)][((int)(block_num%3))*3 + (cell_num%3)];
-      if(curr_num!=UNASSIGNED && nums[curr_num]==true)
-      {
-        grid_status=false;
-        return;
-      }
-      nums[curr_num] = true;
-    }
-  }
-
   // Randomly shuffling the guessing number array
   for(int i=0;i<9;i++)
   {
@@ -428,7 +374,6 @@ int Sudoku::branchDifficultyScore()
 
      if(empty.size() == 0)
      { 
-       cout<<"Hello: "<<sum<<endl;
        return sum;
      } 
 
@@ -475,3 +420,73 @@ void Sudoku::calculateDifficulty()
   this->difficultyLevel = B*100 + emptyCells;
 }
 // END: calculating difficulty level
+
+
+bool Sudoku::isRightSolved(std::string puzzle, bool row_major){
+  if(puzzle.length() != 81)
+  {
+    return false;
+  }
+
+  int grid[9][9];
+
+  // First pass: Check if all cells are valid
+  for(int i=0; i<81; ++i)
+  {
+    int curr_num = puzzle[i]-'0';
+    if(!((curr_num == UNASSIGNED) || (curr_num > 0 && curr_num < 10)))
+    {
+      return false;
+    }
+
+    if(row_major) grid[i/9][i%9] = curr_num;
+    else          grid[i%9][i/9] = curr_num;
+  }
+
+  // Second pass: Check if all columns are valid
+  for (int col_num=0; col_num<9; ++col_num)
+  {
+    bool nums[10]={false};
+    for (int row_num=0; row_num<9; ++row_num)
+    {
+      int curr_num = grid[row_num][col_num];
+      if(curr_num!=UNASSIGNED && nums[curr_num]==true)
+      {
+        return false;
+      }
+      nums[curr_num] = true;
+    }
+  }
+
+  // Third pass: Check if all rows are valid
+  for (int row_num=0; row_num<9; ++row_num)
+  {
+    bool nums[10]={false};
+    for (int col_num=0; col_num<9; ++col_num)
+    {
+      int curr_num = grid[row_num][col_num];
+      if(curr_num!=UNASSIGNED && nums[curr_num]==true)
+      {
+        return false;
+      }
+      nums[curr_num] = true;
+    }
+  }
+
+  // Fourth pass: Check if all blocks are valid
+  for (int block_num=0; block_num<9; ++block_num)
+  {
+    bool nums[10]={false};
+    for (int cell_num=0; cell_num<9; ++cell_num)
+    {
+      int curr_num = grid[((int)(block_num/3))*3 + (cell_num/3)][((int)(block_num%3))*3 + (cell_num%3)];
+      if(curr_num!=UNASSIGNED && nums[curr_num]==true)
+      {
+        return false;
+      }
+      nums[curr_num] = true;
+    }
+  }
+
+  return true;
+}

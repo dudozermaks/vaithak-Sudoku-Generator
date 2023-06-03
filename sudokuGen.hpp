@@ -24,6 +24,7 @@ private:
 public:
   Sudoku ();
   Sudoku (std::string, bool row_major=true);
+  static bool isRightSolved(std::string puzzle, bool row_major);
   void fillEmptyDiagonalBox(int);
   void createSeed();
   void printGrid();
