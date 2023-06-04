@@ -35,6 +35,6 @@ public:
   void genPuzzle();
   bool verifyGridStatus();
   void printSVG(std::string);
-  void calculateDifficulty();
+  int  calculateDifficulty();
   int  branchDifficultyScore();
 };
