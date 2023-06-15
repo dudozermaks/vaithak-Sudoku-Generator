@@ -105,7 +105,7 @@ void Sudoku::createSeed()
       x | x | x
       x | x | x
   */
-  this->solveGrid(); // TODO: not truly random, but still good enough because we generate random diagonals.
+  this->solveGrid(this->grid, this->guessNum); // TODO: not truly random, but still good enough because we generate random diagonals.
 
   // Saving the solution grid
   for(int i=0;i<9;i++)
@@ -217,34 +217,33 @@ void Sudoku::printGrid()
 
 
 // START: Modified Sudoku solver
-bool Sudoku::solveGrid()
+bool Sudoku::solveGrid(int gridToSolve[9][9], int guessNum[9])
 {
     int row, col;
 
     // If there is no unassigned location, we are done
-    if (!FindUnassignedLocation(this->grid, row, col))
+    if (!FindUnassignedLocation(gridToSolve, row, col))
        return true; // success!
 
     // Consider digits 1 to 9
     for (int num = 0; num < 9; num++)
     {
         // if looks promising
-        if (isSafe(this->grid, row, col, this->guessNum[num]))
+        if (isSafe(gridToSolve, row, col, guessNum[num]))
         {
             // make tentative assignment
-            this->grid[row][col] = this->guessNum[num];
+            gridToSolve[row][col] = guessNum[num];
 
             // return, if success, yay!
-            if (solveGrid())
+            if (solveGrid(gridToSolve, guessNum))
                 return true;
 
             // failure, unmake & try again
-            this->grid[row][col] = UNASSIGNED;
+            gridToSolve[row][col] = UNASSIGNED;
         }
     }
 
     return false; // this triggers backtracking
-
 }
 // END: Modified Sudoku Solver
 
@@ -336,19 +335,24 @@ void Sudoku::printSVG(string path="")
 
 
 // START: Calculate branch difficulty score
-int Sudoku::branchDifficultyScore()
+int Sudoku::branchDifficultyScore(std::string puzzle)
 {
    int emptyPositions = -1;
    int tempGrid[9][9];
+
    int sum=0;
 
-   for(int i=0;i<9;i++)
-  {
-    for(int j=0;j<9;j++)
-    {
-      tempGrid[i][j] = this->grid[i][j];
-    }
+  for(int i=0; i<81; ++i){
+    int curr_num = puzzle[i]-'0';
+
+    tempGrid[i/9][i%9] = curr_num;
   }
+  int solvedGrid[9][9];
+  std::copy(&tempGrid[0][0], &tempGrid[0][0]+9*9, &solvedGrid[0][0]);
+
+  int guessNum[9];
+  std::iota(guessNum, guessNum+9, 1);
+  solveGrid(solvedGrid, guessNum);
 
    while(emptyPositions!=0)
    {
@@ -392,7 +396,7 @@ int Sudoku::branchDifficultyScore()
      int rowIndex = empty[minIndex][0]/9;
      int colIndex = empty[minIndex][0]%9;
 
-     tempGrid[rowIndex][colIndex] = this->solnGrid[rowIndex][colIndex];
+     tempGrid[rowIndex][colIndex] = solvedGrid[rowIndex][colIndex];
      sum = sum + ((branchFactor-2) * (branchFactor-2)) ;
 
      emptyPositions = empty.size() - 1;
@@ -405,22 +409,18 @@ int Sudoku::branchDifficultyScore()
 
 
 // START: Calculate difficulty level of current grid
-int Sudoku::calculateDifficulty()
+int Sudoku::calculateDifficulty(std::string puzzle)
 {
-  int B = branchDifficultyScore();
+  int B = branchDifficultyScore(puzzle);
   int emptyCells = 0;
 
-  for(int i=0;i<9;i++)
-  {
-    for(int j=0;j<9;j++)
-    {
-	if(this->grid[i][j] == 0)
-	   emptyCells++;
+  for (char& c : puzzle){
+    if (c == '.' || c == '0'){
+      emptyCells ++;
     }
-  } 
+  }
 
-  this->difficultyLevel = B*100 + emptyCells;
-  return this->difficultyLevel;
+  return B*100 + emptyCells;
 }
 // END: calculating difficulty level
 

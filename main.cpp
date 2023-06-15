@@ -15,7 +15,7 @@ int main(int argc, char const *argv[])
   puzzle->genPuzzle();
 
   // Calculating difficulty of puzzle
-  puzzle->calculateDifficulty();
+  Sudoku::calculateDifficulty(puzzle->getGrid());
 
   // testing by printing the grid
   puzzle->printGrid();

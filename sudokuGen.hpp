@@ -24,17 +24,17 @@ private:
   void clearGrid();
   void fillEmptyDiagonalBox(int);
   void createSeed();
-  bool solveGrid();
   void countSoln(int &number);
 public:
   Sudoku ();
   Sudoku (std::string, bool row_major=true);
   static bool isRightSolved(std::string puzzle, bool row_major);
+  static bool solveGrid(int grid[9][9], int guessNum[9]);
   void printGrid();
   std::string getGrid();
   void genPuzzle();
   bool verifyGridStatus();
   void printSVG(std::string);
-  int  calculateDifficulty();
-  int  branchDifficultyScore();
+  static int  calculateDifficulty(std::string puzzle);
+  static int  branchDifficultyScore(std::string puzzle);
 };
